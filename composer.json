@@ -1,8 +1,12 @@
 {
     "require": {
-        "laminas/laminas-mvc": "^3.3",
-        "php-http/curl-client": "^2.2",
-        "typesense/typesense-php": "^4.8",
-        "symfony/http-client": "^5.4"
+        "php-http/curl-client": "^2.3",
+        "typesense/typesense-php": "^5.0",
+        "symfony/http-client": "^7.2"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
     }
 }
