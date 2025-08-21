@@ -61,7 +61,8 @@ class CreateIndex extends AbstractJob
 
         // Create index with the list of properties configured in module.
         $indexFields = [
-            ['name' => 'resource_id', 'type' => 'string', "index" => true, "optional" => true]
+            ['name' => 'resource_id', 'type' => 'string', "index" => true, "optional" => true],
+            ['name' => 'resource_class', 'type' => 'string', "index" => true, "optional" => true]
         ];
         foreach ($indexProperties as $property) {
             $fieldName = str_replace(":", "_", $property);
