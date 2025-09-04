@@ -39,12 +39,15 @@ SELECT
             `property`.`local_name`
         ) SEPARATOR "|"
     ) AS `fields`,
-    GROUP_CONCAT(`value`.`value` SEPARATOR "|") AS `values`
+    GROUP_CONCAT(`value`.`value` SEPARATOR "|") AS `values`,
+    CONCAT(`rc_vocab`.`prefix`, ':', `rc`.`local_name`) AS `resource_class`
 FROM
-    `value` AS `value`
+    `value`
     LEFT JOIN `resource` ON `resource`.`id` = `value`.`resource_id`
     LEFT JOIN `property` ON `property`.`id` = `value`.`property_id`
     LEFT JOIN `vocabulary` ON `vocabulary`.`id` = `property`.`vocabulary_id`
+    LEFT JOIN `resource_class` AS `rc` ON `resource`.`resource_class_id` = `rc`.`id`
+    LEFT JOIN `vocabulary` AS `rc_vocab` ON `rc`.`vocabulary_id` = `rc_vocab`.`id`
 WHERE
     `resource`.`resource_type` = 'Omeka\\Entity\\Item'
     AND `resource`.`is_public` = true
@@ -90,7 +93,8 @@ SQL;
 
         // Create index with the list of properties configured in module.
         $indexFields = [
-            ['name' => 'resource_id', 'type' => 'string', "index" => true, "optional" => true]
+            ['name' => 'resource_id', 'type' => 'string', "index" => true, "optional" => true],
+            ['name' => 'resource_class', 'type' => 'string', 'index' => true, 'optional' => true],
         ];
         foreach ($indexProperties as $property) {
             $fieldName = str_replace(":", "_", $property);
@@ -135,6 +139,7 @@ SQL;
                 // Add defaults index properties
                 $document = [
                     'resource_id' => strval($result['resource_id']),
+                    'resource_class' => $result['resource_class'] ?? null,
                 ];
 
                 foreach ($indexProperties as $property) {
